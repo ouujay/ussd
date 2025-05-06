@@ -1,5 +1,6 @@
 from flask import Flask, request, Response
 import africastalking
+import threading
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ sms = africastalking.SMS
 def send_sms():
     recipients = ["+2349013413496"]
     message = "Reply to this message!"
-    sender = "25102"  # 🔥 Use your actual shortcode here
+    sender = "25102"  # Your actual shortcode
 
     try:
         response = sms.send(message, recipients, sender)
@@ -22,15 +23,38 @@ def send_sms():
     except Exception as e:
         return f"❌ Error: {e}"
 
+# TODO: Incoming messages route
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
     data = request.form.to_dict()
     print(f"📩 Incoming message...\n{data}")
     return Response(status=200)
 
+# TODO: Delivery reports route
+@app.route('/delivery-reports', methods=['POST'])
+def delivery_reports():
+    data = request.form.to_dict()
+    print(f"📦 Delivery report...\n{data}")
+    return Response(status=200)
 
-# ✅ Home route (optional)
+# ✅ Home route
 @app.route('/')
 def home():
-    return "SMS send + receive service running."
+    return "SMS system running (Send, Receive, Delivery Reports)."
 
+# TODO: Call sendSMS after server starts
+def auto_send_sms():
+    try:
+        response = sms.send(
+            'Hello, AT Ninja!',
+            ['+2349013413496'],
+            sender='25102'
+        )
+        print(f"📨 Auto-sent SMS: {response}")
+    except Exception as e:
+        print(f"❌ Auto-sending failed: {e}")
+
+if __name__ == '__main__':
+    # Trigger SMS after a delay to allow Flask to start fully
+    threading.Timer(2.0, auto_send_sms).start()
+    app.run(debug=True)

@@ -22,12 +22,12 @@ def send_sms():
     except Exception as e:
         return f"❌ Error: {e}"
 
-# TODO: Incoming messages route
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
-    data = request.get_json(force=True)
+    data = request.form.to_dict()
     print(f"📩 Incoming message...\n{data}")
     return Response(status=200)
+
 
 # ✅ Home route (optional)
 @app.route('/')

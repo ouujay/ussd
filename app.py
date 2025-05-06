@@ -20,7 +20,7 @@ def home():
 def send_sms():
     recipients = ["+2349013413496"]  # Replace with your own phone number
     message = "Hey AT Ninja!"
-    sender = "AFRICASTKNG"  # Use this for sandbox
+    sender = "XXYYZZ"  # Use this for sandbox
 
     try:
         response = sms.send(message, recipients, sender)

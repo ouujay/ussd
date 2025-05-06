@@ -13,7 +13,7 @@ class SendSMS:
     def sending(self):
         recipients = ["+2349013413496"]  # Replace with your own phone number in international format
         message = "Hey AT Ninja!"
-        sender = "AFRICASTKNG"  # For sandbox, use 'AFRICASTKNG' as the default sender ID
+        sender = "XXYYZZ"  # For sandbox, use 'AFRICASTKNG' as the default sender ID
 
         try:
             response = self.sms.send(message, recipients, sender)

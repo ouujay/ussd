@@ -2,7 +2,8 @@ from flask import Flask, request, Response, render_template
 import africastalking
 import threading
 
-from utils import create_user_if_not_exists, deduct_credit, get_user
+from utils import create_user_if_not_exists, deduct_credit, get_user,get_ai_response
+
 
 app = Flask(__name__)
 
@@ -41,17 +42,17 @@ def incoming_messages():
     user_credits = get_user(phone)
 
     if user_credits is None or user_credits < 1:
-        sms.send("❌ You're out of credits. Please top up to continue.", [phone])
+        sms.send("You're out of credits. Please top up to continue.", [phone])
         return Response(status=200)
 
-    # Placeholder for AI integration
-    ai_reply = "🤖 This is a placeholder AI response."
+    # Get AI reply with trimming
+    ai_reply = get_ai_response(message, max_chars=300)
 
     try:
         sms.send(ai_reply, [phone])
         deduct_credit(phone)
     except Exception as e:
-        print(f"❌ Auto-reply failed: {e}")
+        print(f"Auto-reply failed: {e}")
 
     return Response(status=200)
 
@@ -72,7 +73,7 @@ def auto_send_sms():
         )
         print(f"📨 Auto-sent SMS: {response}")
     except Exception as e:
-        print(f"❌ Auto-sending failed: {e}")
+        print(f"Auto-sending failed: {e}")
 
 if __name__ == '__main__':
     threading.Timer(2.0, auto_send_sms).start()

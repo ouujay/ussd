@@ -22,19 +22,16 @@ def send_sms():
         return f"✅ SMS sent: {response}"
     except Exception as e:
         return f"❌ Error: {e}"
-
-# TODO: Incoming messages route
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
     data = request.form.to_dict()
     print(f"📩 Incoming message...\n{data}")
 
-    # Extract sender and text
     sender_number = data.get('from')
     user_message = data.get('text', '').strip().lower()
     shortcode = data.get('to')
 
-    # Define reply
+    # Logic for auto-response
     if user_message == "hi":
         reply = "Hello! 👋 This is an auto-response from our bot."
     elif user_message == "help":
@@ -42,15 +39,14 @@ def incoming_messages():
     else:
         reply = "I didn’t understand that. Try typing: hi or help."
 
-    # Send reply
+    # ✅ CORRECT usage of Africa's Talking SDK
     try:
-        response = sms.send(reply, [sender_number], sender=shortcode)
+        response = sms.send(reply, [sender_number], shortcode)
         print(f"🤖 Auto-reply sent: {response}")
     except Exception as e:
         print(f"❌ Auto-reply failed: {e}")
 
     return Response(status=200)
-
 
 # TODO: Delivery reports route
 @app.route('/delivery-reports', methods=['POST'])

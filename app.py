@@ -18,7 +18,7 @@ def home():
 def send_sms():
     recipients = ["+2349013413496"]
     message = "Hey AT Ninja!"
-    sender = "AFRICASTKNG"  # Must be this in sandbox
+    sender = "25102"  # Must be this in sandbox
 
     try:
         response = sms.send(message, recipients, sender)

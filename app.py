@@ -2,8 +2,7 @@ from flask import Flask, request, Response, render_template
 import africastalking
 import threading
 
-from utils import create_user_if_not_exists, deduct_credit, get_user,get_ai_response
-
+from utils import create_user_if_not_exists, deduct_credit, get_user, get_ai_response
 
 app = Flask(__name__)
 
@@ -34,9 +33,13 @@ def send_sms():
 # Receive SMS and auto-reply
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
-    data = request.get_json(force=True)
+    data = request.form.to_dict()
     phone = data.get('from')
     message = data.get('text')
+
+    if not phone or not message:
+        print("❌ Missing 'from' or 'text' in payload:", data)
+        return Response(status=400)
 
     create_user_if_not_exists(phone)
     user_credits = get_user(phone)
@@ -52,7 +55,7 @@ def incoming_messages():
         sms.send(ai_reply, [phone])
         deduct_credit(phone)
     except Exception as e:
-        print(f"Auto-reply failed: {e}")
+        print(f"❌ Auto-reply failed: {e}")
 
     return Response(status=200)
 
@@ -60,7 +63,7 @@ def incoming_messages():
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
     data = request.form.to_dict()
-    print(f"📦 Delivery report...\n{data}")
+    print(f"📦 Delivery report...n{data}")
     return Response(status=200)
 
 # Auto send message on server start
@@ -73,8 +76,9 @@ def auto_send_sms():
         )
         print(f"📨 Auto-sent SMS: {response}")
     except Exception as e:
-        print(f"Auto-sending failed: {e}")
+        print(f"❌ Auto-sending failed: {e}")
 
 if __name__ == '__main__':
     threading.Timer(2.0, auto_send_sms).start()
     app.run(debug=True)
+

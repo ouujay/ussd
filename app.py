@@ -27,25 +27,28 @@ class UserAccount(db.Model):
 
 @app.route('/', methods=['POST', 'GET'])
 def ussd_callback():
-    session_id = request.values.get("sessionId", None)
-    service_code = request.values.get("serviceCode", None)
-    phone_number = request.values.get("phoneNumber", None)
+    session_id = request.values.get("sessionId")
+    service_code = request.values.get("serviceCode")
+    phone_number = request.values.get("phoneNumber")
     text = request.values.get("text", "")
 
-    # Check if user already has an account
-    account = UserAccount.query.filter_by(phone_number=phone_number).first()
+    # ✅ Prevent errors if phone_number is missing (e.g. browser visit)
+    if not phone_number:
+        return "This endpoint only handles USSD POST requests from Africa's Talking.", 400
 
-    # If not, create one with default data
+    # ✅ Check or create user account
+    account = UserAccount.query.filter_by(phone_number=phone_number).first()
     if not account:
+        suffix = phone_number[-4:] if len(phone_number) >= 4 else "0000"
         account = UserAccount(
             phone_number=phone_number,
-            account_number="ACC" + phone_number[-4:],  # e.g. ACC1234
+            account_number="ACC" + suffix,
             balance="KES 10,000"
         )
         db.session.add(account)
         db.session.commit()
 
-    # Save or update session in DB
+    # ✅ Save or update session in DB
     session = Session.query.filter_by(session_id=session_id).first()
     if not session:
         session = Session(session_id=session_id, phone_number=phone_number, text=text)
@@ -54,7 +57,7 @@ def ussd_callback():
         session.text = text
     db.session.commit()
 
-    # USSD Logic
+    # ✅ USSD Menu Logic
     if text == "":
         response = "CON What would you want to check \n"
         response += "1. My Account \n"

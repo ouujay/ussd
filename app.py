@@ -28,7 +28,29 @@ def send_sms():
 def incoming_messages():
     data = request.form.to_dict()
     print(f"📩 Incoming message...\n{data}")
+
+    # Extract sender and text
+    sender_number = data.get('from')
+    user_message = data.get('text', '').strip().lower()
+    shortcode = data.get('to')
+
+    # Define reply
+    if user_message == "hi":
+        reply = "Hello! 👋 This is an auto-response from our bot."
+    elif user_message == "help":
+        reply = "Need help? Reply with: MENU to see options."
+    else:
+        reply = "I didn’t understand that. Try typing: hi or help."
+
+    # Send reply
+    try:
+        response = sms.send(reply, [sender_number], sender=shortcode)
+        print(f"🤖 Auto-reply sent: {response}")
+    except Exception as e:
+        print(f"❌ Auto-reply failed: {e}")
+
     return Response(status=200)
+
 
 # TODO: Delivery reports route
 @app.route('/delivery-reports', methods=['POST'])

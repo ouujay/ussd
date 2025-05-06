@@ -32,7 +32,7 @@ from together import Together
 import re
 
 # Initialize Together AI client
-client = Together(api_key="your_together_api_key")
+client = Together(api_key="581c6afa68a3f1c547d6ae2e3531f2c424e80b29ca6eb463619207c439c20e8a")
 
 # Smart trimming by sentence
 def trim_smart(text, max_chars=300):

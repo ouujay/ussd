@@ -1,62 +1,40 @@
 import sqlite3
-import re
-from together import Together
-
-# =========================
-# === DATABASE METHODS ===
-# =========================
-
-DB_NAME = 'sms_ai.db'
-
-def init_db():
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            phone TEXT PRIMARY KEY,
-            credits INTEGER DEFAULT 0
-        )
-    ''')
-    conn.commit()
-    conn.close()
 
 def get_user(phone):
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect('sms_ai.db')
     cursor = conn.cursor()
     cursor.execute("SELECT credits FROM users WHERE phone = ?", (phone,))
     row = cursor.fetchone()
     conn.close()
-    return row[0] if row else 0
+    return row[0] if row else None
 
 def create_user_if_not_exists(phone):
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect('sms_ai.db')
     cursor = conn.cursor()
     cursor.execute("INSERT OR IGNORE INTO users (phone, credits) VALUES (?, ?)", (phone, 0))
     conn.commit()
     conn.close()
 
 def deduct_credit(phone):
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect('sms_ai.db')
     cursor = conn.cursor()
     cursor.execute("UPDATE users SET credits = credits - 1 WHERE phone = ? AND credits > 0", (phone,))
     conn.commit()
     conn.close()
 
 def add_credit(phone, amount):
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect('sms_ai.db')
     cursor = conn.cursor()
     cursor.execute("UPDATE users SET credits = credits + ? WHERE phone = ?", (amount, phone))
     conn.commit()
     conn.close()
-
-# ================================
-# === AI RESPONSE (TOGETHER AI) ==
-# ================================
+from together import Together
+import re
 
 # Initialize Together AI client
 client = Together(api_key="581c6afa68a3f1c547d6ae2e3531f2c424e80b29ca6eb463619207c439c20e8a")
 
-# Trims text to nearest sentence under limit
+# Smart trimming by sentence
 def trim_smart(text, max_chars=300):
     sentences = re.split(r'(?<=[.!?]) +', text)
     result = ''
@@ -67,6 +45,7 @@ def trim_smart(text, max_chars=300):
             break
     return result.strip()
 
+# Main AI function
 def get_ai_response(prompt, max_chars=300):
     try:
         response = client.chat.completions.create(

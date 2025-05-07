@@ -28,14 +28,14 @@ def home():
 def send_sms():
     recipients = ["+2349013413496"]
     message = "Reply to this message!"
-
+    # Try omitting sender in sandbox
     try:
-        response = sms.send(message, recipients)
+        response = sms.send(message, recipients)  # removed sender='25102'
         return f"✅ SMS sent: {response}"
     except Exception as e:
         return f"❌ Error: {e}"
 
-# Handle incoming SMS
+# Receive incoming SMS
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
     data = request.form.to_dict()
@@ -63,14 +63,14 @@ def incoming_messages():
 
     return Response(status=200)
 
-# Delivery report handler
+# Delivery reports
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
     data = request.form.to_dict()
     print(f"📦 Delivery report...\n{data}")
     return Response(status=200)
 
-# Manual top-up test page
+# Manual top-up page
 @app.route('/topup', methods=['GET', 'POST'])
 def topup():
     if request.method == 'POST':
@@ -87,48 +87,15 @@ def topup():
 
     return render_template("topup.html")
 
-# Automatically send message when server starts
+# Auto message on server start
 def auto_send_sms():
     try:
-        response = sms.send("Hello, AT Ninja!", ["+2349013413496"])
+        response = sms.send("Hello, AT Ninja!", ["+2349013413496"])  # No sender
         print(f"📨 Auto-sent SMS: {response}")
     except Exception as e:
         print(f"❌ Auto-sending failed: {e}")
 
-# USSD Menu
-@app.route('/ussd', methods=['POST'])
-def ussd():
-    session_id = request.values.get('sessionId')
-    phone_number = request.values.get('phoneNumber')
-    text = request.values.get('text', '')
-
-    user_input = text.strip().split('*') if text else []
-    response = ""
-
-    if len(user_input) == 0:
-        response = "CON Welcome to SmartBot\n1. Check Credit\n2. Top Up"
-    elif user_input[0] == '1':
-        credits = get_user(phone_number)
-        response = f"END You have {credits or 0} credit(s) left."
-    elif user_input[0] == '2':
-        if len(user_input) == 1:
-            response = "CON Enter amount to top up:"
-        elif len(user_input) == 2:
-            try:
-                amount = int(user_input[1])
-                create_user_if_not_exists(phone_number)
-                add_credit(phone_number, amount)
-                response = f"END {amount} credit(s) added successfully!"
-            except:
-                response = "END Invalid amount. Please try again."
-        else:
-            response = "END Invalid input. Start again."
-    else:
-        response = "END Invalid option. Try again."
-
-    return Response(response, mimetype="text/plain")
-
-# Start app
+# Start server
 if __name__ == '__main__':
     threading.Timer(2.0, auto_send_sms).start()
     app.run(debug=True)

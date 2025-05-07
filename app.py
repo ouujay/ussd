@@ -23,22 +23,19 @@ sms = africastalking.SMS
 def home():
     return render_template("index.html")
 
-
-# Send test SMS
+# Test SMS
 @app.route('/send')
 def send_sms():
     recipients = ["+2349013413496"]
     message = "Reply to this message!"
 
     try:
-        # In production, specify `sender='25102'` if needed
         response = sms.send(message, recipients)
         return f"✅ SMS sent: {response}"
     except Exception as e:
         return f"❌ Error: {e}"
 
-
-# Handle incoming messages from Africa's Talking
+# Handle incoming SMS
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
     data = request.form.to_dict()
@@ -66,14 +63,12 @@ def incoming_messages():
 
     return Response(status=200)
 
-
-# Handle delivery reports
+# Delivery report handler
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
     data = request.form.to_dict()
     print(f"📦 Delivery report...\n{data}")
     return Response(status=200)
-
 
 # Manual top-up test page
 @app.route('/topup', methods=['GET', 'POST'])
@@ -92,7 +87,6 @@ def topup():
 
     return render_template("topup.html")
 
-
 # Automatically send message when server starts
 def auto_send_sms():
     try:
@@ -100,16 +94,15 @@ def auto_send_sms():
         print(f"📨 Auto-sent SMS: {response}")
     except Exception as e:
         print(f"❌ Auto-sending failed: {e}")
-        
+
+# USSD Menu
 @app.route('/ussd', methods=['POST'])
 def ussd():
     session_id = request.values.get('sessionId')
     phone_number = request.values.get('phoneNumber')
     text = request.values.get('text', '')
 
-    # Split text input by "*" to track navigation
     user_input = text.strip().split('*') if text else []
-
     response = ""
 
     if len(user_input) == 0:
@@ -118,20 +111,22 @@ def ussd():
         credits = get_user(phone_number)
         response = f"END You have {credits or 0} credit(s) left."
     elif user_input[0] == '2':
-        response = "CON Enter amount to top up:"
-    elif user_input[0] == '2' and len(user_input) == 2:
-        try:
-            amount = int(user_input[1])
-            create_user_if_not_exists(phone_number)
-            add_credit(phone_number, amount)
-            response = f"END {amount} credit(s) added successfully!"
-        except:
-            response = "END Invalid amount. Please try again."
+        if len(user_input) == 1:
+            response = "CON Enter amount to top up:"
+        elif len(user_input) == 2:
+            try:
+                amount = int(user_input[1])
+                create_user_if_not_exists(phone_number)
+                add_credit(phone_number, amount)
+                response = f"END {amount} credit(s) added successfully!"
+            except:
+                response = "END Invalid amount. Please try again."
+        else:
+            response = "END Invalid input. Start again."
     else:
         response = "END Invalid option. Try again."
 
     return Response(response, mimetype="text/plain")
-
 
 # Start app
 if __name__ == '__main__':

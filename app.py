@@ -100,6 +100,37 @@ def auto_send_sms():
         print(f"📨 Auto-sent SMS: {response}")
     except Exception as e:
         print(f"❌ Auto-sending failed: {e}")
+        
+@app.route('/ussd', methods=['POST'])
+def ussd():
+    session_id = request.values.get('sessionId')
+    phone_number = request.values.get('phoneNumber')
+    text = request.values.get('text', '')
+
+    # Split text input by "*" to track navigation
+    user_input = text.strip().split('*') if text else []
+
+    response = ""
+
+    if len(user_input) == 0:
+        response = "CON Welcome to SmartBot\n1. Check Credit\n2. Top Up"
+    elif user_input[0] == '1':
+        credits = get_user(phone_number)
+        response = f"END You have {credits or 0} credit(s) left."
+    elif user_input[0] == '2':
+        response = "CON Enter amount to top up:"
+    elif user_input[0] == '2' and len(user_input) == 2:
+        try:
+            amount = int(user_input[1])
+            create_user_if_not_exists(phone_number)
+            add_credit(phone_number, amount)
+            response = f"END {amount} credit(s) added successfully!"
+        except:
+            response = "END Invalid amount. Please try again."
+    else:
+        response = "END Invalid option. Try again."
+
+    return Response(response, mimetype="text/plain")
 
 
 # Start app

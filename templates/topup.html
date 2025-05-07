@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Up Credits</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-lg mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-xl font-bold mb-4">Top Up User Credits</h2>
+        <form action="/topup" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium">Phone Number</label>
+                <input name="phone" type="text" required class="w-full border p-2 rounded" placeholder="+2349012345678">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Amoun of Credits</label>
+                <input name="amount" type="number" required class="w-full border p-2 rounded" placeholder="e.g. 5">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Top Up
+            </button>
+        </form>
+    </div>
+</body>
+</html>

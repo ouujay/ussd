@@ -2,7 +2,13 @@ from flask import Flask, request, Response, render_template
 import africastalking
 import threading
 
-from utils import add_credit, create_user_if_not_exists, deduct_credit, get_user, get_ai_response
+from utils import (
+    add_credit,
+    create_user_if_not_exists,
+    deduct_credit,
+    get_user,
+    get_ai_response
+)
 
 app = Flask(__name__)
 
@@ -17,20 +23,19 @@ sms = africastalking.SMS
 def home():
     return render_template("index.html")
 
-# Send test SMS
+# Test SMS
 @app.route('/send')
 def send_sms():
     recipients = ["+2349013413496"]
     message = "Reply to this message!"
-    sender = "25102"
-
+    # Try omitting sender in sandbox
     try:
-        response = sms.send(message, recipients, sender)
+        response = sms.send(message, recipients)  # removed sender='25102'
         return f"✅ SMS sent: {response}"
     except Exception as e:
         return f"❌ Error: {e}"
 
-# Receive SMS and auto-reply
+# Receive incoming SMS
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
     data = request.form.to_dict()
@@ -38,7 +43,7 @@ def incoming_messages():
     message = data.get('text')
 
     if not phone or not message:
-        print(" Missing 'from' or 'text' in payload:", data)
+        print("❌ Missing 'from' or 'text' in payload:", data)
         return Response(status=400)
 
     create_user_if_not_exists(phone)
@@ -48,36 +53,24 @@ def incoming_messages():
         sms.send("You're out of credits. Please top up to continue.", [phone])
         return Response(status=200)
 
-    # Get AI reply with trimming
-    ai_reply = get_ai_response(message, max_chars=300)
+    ai_reply = get_ai_response(message.strip(), max_chars=300)
 
     try:
         sms.send(ai_reply, [phone])
         deduct_credit(phone)
     except Exception as e:
-        print(f" Auto-reply failed: {e}")
+        print(f"❌ Auto-reply failed: {e}")
 
     return Response(status=200)
 
-# Delivery reports route
+# Delivery reports
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
     data = request.form.to_dict()
-    print(f" Delivery report...n{data}")
+    print(f"📦 Delivery report...\n{data}")
     return Response(status=200)
 
-# Auto send message on server start
-def auto_send_sms():
-    try:
-        response = sms.send(
-            'Hello, AT Ninja!',
-            ['+2349013413496'],
-            sender='25102'
-        )
-        print(f"📨 Auto-sent SMS: {response}")
-    except Exception as e:
-        print(f" Auto-sending failed: {e}")
-
+# Manual top-up page
 @app.route('/topup', methods=['GET', 'POST'])
 def topup():
     if request.method == 'POST':
@@ -94,8 +87,15 @@ def topup():
 
     return render_template("topup.html")
 
+# Auto message on server start
+def auto_send_sms():
+    try:
+        response = sms.send("Hello, AT Ninja!", ["+2349013413496"])  # No sender
+        print(f"📨 Auto-sent SMS: {response}")
+    except Exception as e:
+        print(f"❌ Auto-sending failed: {e}")
 
+# Start server
 if __name__ == '__main__':
     threading.Timer(2.0, auto_send_sms).start()
     app.run(debug=True)
-

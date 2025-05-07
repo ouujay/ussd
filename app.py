@@ -23,19 +23,22 @@ sms = africastalking.SMS
 def home():
     return render_template("index.html")
 
-# Test SMS
+
+# Send test SMS
 @app.route('/send')
 def send_sms():
     recipients = ["+2349013413496"]
     message = "Reply to this message!"
-    # Try omitting sender in sandbox
+
     try:
-        response = sms.send(message, recipients)  # removed sender='25102'
+        # In production, specify `sender='25102'` if needed
+        response = sms.send(message, recipients)
         return f"✅ SMS sent: {response}"
     except Exception as e:
         return f"❌ Error: {e}"
 
-# Receive incoming SMS
+
+# Handle incoming messages from Africa's Talking
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
     data = request.form.to_dict()
@@ -63,14 +66,16 @@ def incoming_messages():
 
     return Response(status=200)
 
-# Delivery reports
+
+# Handle delivery reports
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
     data = request.form.to_dict()
     print(f"📦 Delivery report...\n{data}")
     return Response(status=200)
 
-# Manual top-up page
+
+# Manual top-up test page
 @app.route('/topup', methods=['GET', 'POST'])
 def topup():
     if request.method == 'POST':
@@ -87,15 +92,17 @@ def topup():
 
     return render_template("topup.html")
 
-# Auto message on server start
+
+# Automatically send message when server starts
 def auto_send_sms():
     try:
-        response = sms.send("Hello, AT Ninja!", ["+2349013413496"])  # No sender
+        response = sms.send("Hello, AT Ninja!", ["+2349013413496"])
         print(f"📨 Auto-sent SMS: {response}")
     except Exception as e:
         print(f"❌ Auto-sending failed: {e}")
 
-# Start server
+
+# Start app
 if __name__ == '__main__':
     threading.Timer(2.0, auto_send_sms).start()
     app.run(debug=True)

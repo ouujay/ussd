@@ -67,9 +67,10 @@ def incoming_messages():
 # === 6. Handle delivery report logs ===
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
-    data = request.get_json(force=True)
+    data = request.form.to_dict()  # ✅ not get_json
     print(f"📦 Delivery report received:\n{data}")
     return Response(status=200)
+
 
 # === 7. Root route ===
 @app.route('/')

@@ -12,7 +12,7 @@ africastalking.initialize(username, api_key)
 sms = africastalking.SMS
 
 # === 2. Set your sandbox shortcode ===
-SANDBOX_SHORTCODE = "25102"  # Replace with your actual sandbox shortcode (e.g., "44905" if it's set)
+SANDBOX_SHORTCODE = "44905"  # Replace with your actual sandbox shortcode (e.g., "44905" if it's set)
 
 # === 3. Automatically send test SMS on server start ===
 def auto_send_sms():

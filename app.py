@@ -5,86 +5,78 @@ import os
 
 app = Flask(__name__)
 
-# === 1. Initialize Africa's Talking with LIVE credentials ===
+# === 1. Sandbox credentials ===
 username = 'sandbox'
 api_key = 'atsk_40303b14f9e27e8c0f08d18ea3b8327cdf8cb7f1f8c036d198ac38ee5aea7e27b0e6a746'
-
 africastalking.initialize(username, api_key)
 sms = africastalking.SMS
 
-# === 2. Define shortcode to use for sending messages ===
-SHORTCODE = "44905"  # ✅ Your live shortcode
-
-# === 3. Auto-send SMS when server starts ===
+# === 2. Auto-send test message (no shortcode needed here) ===
 def auto_send_sms():
     try:
-        response = sms.send("👋 Welcome to our SMS service!", ["+2349013413496"], sender=SHORTCODE)
+        response = sms.send("👋 Welcome to the SMS bot!", ["+2349013413496"])
         print(f"📨 Auto-sent SMS: {response}")
     except Exception as e:
         print(f"❌ Auto-sending failed: {e}")
 
-# === 4. Send SMS manually via route ===
+# === 3. Manual send test ===
 @app.route('/send')
 def send_sms():
-    recipients = ["+2349013413496"]
-    message = "📣 Test: This is a live message from our service."
     try:
-        response = sms.send(message, recipients, sender=SHORTCODE)
+        response = sms.send("🚀 This is a test SMS from /send route!", ["+2349013413496"])
         return f"✅ SMS sent: {response}"
     except Exception as e:
-        return f"❌ Error: {e}"
+        return f"❌ Error sending SMS: {e}"
 
-# === 5. Handle incoming SMS (automated reply logic) ===
+# === 4. Incoming message handler ===
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
     data = request.form.to_dict()
-    print(f"📩 Incoming message...\n{data}")
+    print(f"📩 Incoming message: {data}")
 
     sender_number = data.get('from')
     user_message = data.get('text', '').strip().lower()
-    shortcode = data.get('to')
+    shortcode = data.get('to')  # ✅ Africa's Talking passes the shortcode here
 
-    # Auto-reply logic
+    # Response logic
     if user_message == "hi":
-        reply = "👋 Hello there! Type HELP to see what I can do."
+        reply = "👋 Hello there! Type HELP to see options."
     elif user_message == "help":
-        reply = "🧠 Options: RECHARGE, BALANCE, STOP."
+        reply = "🧠 Available: RECHARGE, BALANCE, STOP."
     elif user_message == "recharge":
-        reply = "⚡ Recharge code: 1234-5678. Done!"
+        reply = "🔋 Recharge successful. Code: 1234."
     elif user_message == "balance":
-        reply = "💰 Your current balance is ₦250.00"
+        reply = "💰 Your balance is ₦500."
     elif user_message == "stop":
-        reply = "❌ You’ve been unsubscribed. Text START to rejoin."
+        reply = "🚫 You've been unsubscribed."
     elif user_message == "start":
-        reply = "✅ You're now subscribed again. Welcome back!"
+        reply = "✅ Welcome back!"
     else:
-        reply = "❓ Unknown command. Try typing: HI or HELP."
+        reply = "❓ Unknown command. Try 'hi' or 'help'."
 
-    # Send reply using AT
+    # ✅ This is where we use the shortcode properly (as the sender for replies)
     try:
-        response = sms.send(reply, [sender_number], sender=SHORTCODE)
+        response = sms.send(reply, [sender_number], sender=shortcode)  # ✅ Correct use
         print(f"🤖 Auto-reply sent: {response}")
     except Exception as e:
         print(f"❌ Auto-reply failed: {e}")
 
     return Response(status=200)
 
-# === 6. Handle delivery reports ===
+# === 5. Delivery reports ===
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
     data = request.form.to_dict()
-    print(f"📦 Delivery report received:\n{data}")
+    print(f"📦 Delivery report received: {data}")
     return Response(status=200)
 
-# === 7. Default home page ===
+# === 6. Default route ===
 @app.route('/')
 def home():
-    return "📱 SMS system running with shortcode 44905 (Live Mode)."
+    return "📱 Africa's Talking SMS Bot (Sandbox) is running."
 
-# === 8. Start Flask app with port binding for deployment ===
+# === 7. Start Flask app ===
 if __name__ == '__main__':
-    # Auto-send a welcome SMS after 2 seconds when the server starts
     threading.Timer(2.0, auto_send_sms).start()
-    
-    port = int(os.environ.get("PORT", 10000))  # Render/Heroku uses dynamic ports
+    port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port, debug=True)

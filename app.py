@@ -57,5 +57,5 @@ def home():
 # === 8. Start Flask app ===
 if __name__ == '__main__':
     threading.Timer(2.0, auto_send_sms).start()
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get("PORT", 5000))  # ✅ Use Render-assigned port
+    app.run(host='0.0.0.0', port=port)

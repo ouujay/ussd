@@ -7,12 +7,12 @@ app = Flask(__name__)
 
 # === 1. Initialize SDK with Sandbox credentials ===
 username = 'sandbox'
-api_key = 'atsk_40303b14f9e27e8c0f08d18ea3b8327cdf8cb7f1f8c036d198ac38ee5aea7e27b0e6a746'
+api_key = 'atsk_12d2b3f0b1f2bd1e0e5a16ee7241b5e6a88721f6656a0aec30df01d1d556d864cedf7703'
 africastalking.initialize(username, api_key)
 sms = africastalking.SMS
 
 # === 2. Set your sandbox shortcode ===
-SANDBOX_SHORTCODE = "44905"  # Replace with your actual sandbox shortcode (e.g., "44905" if it's set)
+SANDBOX_SHORTCODE = "54342"  # Replace with your actual sandbox shortcode (e.g., "44905" if it's set)
 
 # === 3. Automatically send test SMS on server start ===
 def auto_send_sms():

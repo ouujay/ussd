@@ -12,7 +12,7 @@ africastalking.initialize(username, api_key)
 sms = africastalking.SMS
 
 # === 2. Set your sandbox shortcode ===
-SANDBOX_SHORTCODE = "54342"  # Replace with your actual sandbox shortcode (e.g., "44905" if it's set)
+SANDBOX_SHORTCODE = "54342"  # Use your actual sandbox shortcode from AT
 
 # === 3. Automatically send test SMS on server start ===
 def auto_send_sms():
@@ -34,13 +34,14 @@ def send_sms():
 # === 5. Handle incoming SMS messages and auto-reply ===
 @app.route('/incoming-messages', methods=['POST'])
 def incoming_messages():
-    data = request.get_json(force=True)
+    data = request.form.to_dict()  # ✅ Correct method for AT incoming SMS
     print(f"📩 Incoming message:\n{data}")
 
     sender_number = data.get("from")
     user_message = data.get("text", "").strip().lower()
     shortcode = data.get("to") or SANDBOX_SHORTCODE
 
+    # Reply logic
     if user_message == "hi":
         reply = "👋 Hello! Type HELP to see what I can do."
     elif user_message == "help":
@@ -67,10 +68,9 @@ def incoming_messages():
 # === 6. Handle delivery report logs ===
 @app.route('/delivery-reports', methods=['POST'])
 def delivery_reports():
-    data = request.form.to_dict()  # ✅ not get_json
+    data = request.form.to_dict()
     print(f"📦 Delivery report received:\n{data}")
     return Response(status=200)
-
 
 # === 7. Root route ===
 @app.route('/')

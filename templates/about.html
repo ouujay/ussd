@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Funbi Onaeko</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #212529;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #495057;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .about-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .about-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 1rem;
+        }
+
+        .about-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+
+        .about-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .bio-section {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid #495057;
+        }
+
+        .bio-section h3 {
+            color: #212529;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .bio-section p {
+            color: #495057;
+            margin-bottom: 1rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-category {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .skill-category:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .skill-category h4 {
+            color: #212529;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: white;
+            color: #495057;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid #dee2e6;
+        }
+
+        .timeline {
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 2rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dee2e6;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 1.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: #495057;
+            border-radius: 50%;
+        }
+
+        .timeline-date {
+            color: #6c757d;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .timeline-title {
+            color: #212529;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        .timeline-description {
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .about-section {
+                padding: 2rem 1.5rem;
+            }
+            
+            .about-title {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-link {
+                width: 100%;
+                max-width: 200px;
+                text-align: center;
+            }
+            
+            .timeline::before {
+                left: 1rem;
+            }
+            
+            .timeline-item {
+                padding-left: 2.5rem;
+            }
+            
+            .timeline-item::before {
+                left: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/about" class="nav-link active">About</a>
+            <a href="/game" class="nav-link">Game</a>
+        </div>
+
+        <div class="about-section">
+            <div class="about-header">
+                <h1 class="about-title">About Funbi</h1>
+                <p class="about-subtitle">Full-Stack Developer, Entrepreneur & Tech Innovator</p>
+            </div>
+
+            <div class="about-content">
+                <div class="bio-section">
+                    <h3>🚀 My Journey</h3>
+                    <p>I'm Funbi Onaeko, a passionate Computer Science student at Pan-Atlantic University with a deep love for creating technology that solves real-world problems. Based in Ibadan, Nigeria, I've been building innovative solutions that bridge the gap between technology and everyday needs.</p>
+                    
+                    <p>From scaling OrderingPau to 800+ active users to developing AI-powered chatbots for underserved communities, I believe in using technology as a force for social impact and economic empowerment.</p>
+                    
+                    <p>My entrepreneurial journey started with identifying problems in my immediate environment and building tech solutions. This approach has led me to create platforms for food delivery, social networking, logistics, and safety - all tailored for the African market.</p>
+                </div>
+
+                <div class="bio-section">
+                    <h3>💡 What Drives Me</h3>
+                    <p>I'm particularly passionate about:</p>
+                    <ul style="margin: 1rem 0; padding-left: 1.5rem; color: #495057;">
+                        <li>AI for Social Impact - Making AI accessible to underserved communities</li>
+                        <li>Mobile-First Development - Creating solutions that work in low-connectivity environments</li>
+                        <li>Entrepreneurship - Building sustainable tech businesses that create value</li>
+                        <li>Open Source - Contributing to the global developer community</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom: 1.5rem; color: #212529;">🛠️ Technical Skills</h3>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4>💻 Programming</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">JavaScript</span>
+                                <span class="skill-tag">TypeScript</span>
+                                <span class="skill-tag">Rust</span>
+                                <span class="skill-tag">C++</span>
+                                <span class="skill-tag">Java</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>🌐 Web Development</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Django</span>
+                                <span class="skill-tag">Flask</span>
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">React Native</span>
+                                <span class="skill-tag">NestJS</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>🗄️ Databases & Cloud</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">PostgreSQL</span>
+                                <span class="skill-tag">MySQL</span>
+                                <span class="skill-tag">Redis</span>
+                                <span class="skill-tag">AWS</span>
+                                <span class="skill-tag">Azure</span>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h4>🤖 AI & Data Science</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Machine Learning</span>
+                                <span class="skill-tag">Deep Learning</span>
+                                <span class="skill-tag">NLP</span>
+                                <span class="skill-tag">Computer Vision</span>
+                                <span class="skill-tag">Predictive Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom: 2rem; color: #212529;">📈 Experience Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">Apr 2025 - Present</div>
+                            <div class="timeline-title">AI SMS/USSD Chatbot Platform - Technical Lead</div>
+                            <div class="timeline-description">Leading development of AI-powered SMS/USSD chatbot for low-connectivity Nigerian communities.</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-date">Jan 2024 - Present</div>
+                            <div class="timeline-title">OrderingPau - Founder & CEO</div>
+                            <div class="timeline-description">Founded and scaled campus-focused delivery startup to 800+ active users.</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-date">Jun 2022 - Dec 2022</div>
+                            <div class="timeline-title">Robotics AI Nigeria - Intern</div>
+                            <div class="timeline-description">Developed client-churn prediction model, ranked 5th in Zindi ML competition among 1,000+ participants.</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-date">Dec 2026 (Expected)</div>
+                            <div class="timeline-title">Pan-Atlantic University - B.Sc Computer Science</div>
+                            <div class="timeline-description">Specializing in AI, Machine Learning, and Software Engineering.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bio-section">
+                    <h3>🌍 Beyond Code</h3>
+                    <p>When I'm not coding, you'll find me exploring new technologies, mentoring upcoming developers, or brainstorming the next big solution to make technology more accessible in Africa.</p>
+                    
+                    <p>I speak English fluently and Yoruba natively, which helps me understand and build for diverse user bases across Nigeria and beyond.</p>
+                    
+                    <p><strong>Let's connect and build something amazing together!</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

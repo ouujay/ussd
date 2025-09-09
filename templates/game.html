@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game - Code Breaker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #212529 0%, #495057 100%);
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #f8f9fa, #adb5bd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-description {
+            font-size: 1.2rem;
+            color: #adb5bd;
+            margin-bottom: 2rem;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+        }
+
+        .card {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .card.flipped {
+            background: rgba(52, 58, 64, 0.8);
+            border-color: #6c757d;
+        }
+
+        .card.matched {
+            background: rgba(40, 167, 69, 0.3);
+            border-color: #28a745;
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f8f9fa;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #adb5bd;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .difficulty-selector {
+            margin-bottom: 2rem;
+        }
+
+        .difficulty-btn {
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .game-container {
+                padding: 2rem 1rem;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .game-board {
+                max-width: 300px;
+                gap: 0.5rem;
+            }
+            
+            .card {
+                font-size: 1.5rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-link {
+                width: 100%;
+                max-width: 200px;
+                text-align: center;
+            }
+            
+            .game-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/about" class="nav-link">About</a>
+            <a href="/game" class="nav-link active">Game</a>
+        </div>
+
+        <div class="game-container">
+            <h1 class="game-title">🧠 Memory Match</h1>
+            <p class="game-description">Test your memory skills! Match all the coding symbols to win.</p>
+            
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" onclick="setDifficulty('easy')">Easy (4x4)</button>
+                <button class="difficulty-btn" onclick="setDifficulty('hard')">Hard (6x6)</button>
+            </div>
+
+            <div class="game-stats">
+                <div class="stat">
+                    <div class="stat-value" id="moves">0</div>
+                    <div class="stat-label">Moves</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="matches">0</div>
+                    <div class="stat-label">Matches</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="timer">00:00</div>
+                    <div class="stat-label">Time</div>
+                </div>
+            </div>
+
+            <div class="game-board" id="gameBoard"></div>
+
+            <div class="game-controls">
+                <button class="btn" onclick="startGame()">🎮 New Game</button>
+                <button class="btn" onclick="resetGame()">🔄 Reset</button>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <h3>🎉 Congratulations!</h3>
+                <p>You completed the game! Think you can beat your time?</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            cards: [],
+            flippedCards: [],
+            matchedPairs: 0,
+            moves: 0,
+            startTime: null,
+            timerInterval: null,
+            difficulty: 'easy'
+        };
+
+        const symbols = ['💻', '🚀', '⚡', '🔥', '💡', '🎯', '🌟', '⭐', '🎨', '🔧', '📱', '🌈', '🎵', '🎮', '🏆', '💎', '🔑', '🌍'];
+
+        function setDifficulty(level) {
+            gameState.difficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const board = document.getElementById('gameBoard');
+            if (level === 'easy') {
+                board.style.gridTemplateColumns = 'repeat(4, 1fr)';
+            } else {
+                board.style.gridTemplateColumns = 'repeat(6, 1fr)';
+            }
+            
+            startGame();
+        }
+
+        function createCards() {
+            const pairCount = gameState.difficulty === 'easy' ? 8 : 18;
+            const gameSymbols = symbols.slice(0, pairCount);
+            const cardPairs = [...gameSymbols, ...gameSymbols];
+            
+            // Shuffle the cards
+            for (let i = cardPairs.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cardPairs[i], cardPairs[j]] = [cardPairs[j], cardPairs[i]];
+            }
+            
+            return cardPairs.map((symbol, index) => ({
+                id: index,
+                symbol: symbol,
+                isFlipped: false,
+                isMatched: false
+            }));
+        }
+
+        function renderBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+            
+            gameState.cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.dataset.id = card.id;
+                
+                if (card.isFlipped || card.isMatched) {
+                    cardElement.textContent = card.symbol;
+                    cardElement.classList.add('flipped');
+                }
+                
+                if (card.isMatched) {
+                    cardElement.classList.add('matched');
+                }
+                
+                cardElement.addEventListener('click', () => handleCardClick(card.id));
+                board.appendChild(cardElement);
+            });
+        }
+
+        function handleCardClick(cardId) {
+            const card = gameState.cards[cardId];
+            
+            if (card.isFlipped || card.isMatched || gameState.flippedCards.length >= 2) {
+                return;
+            }
+            
+            card.isFlipped = true;
+            gameState.flippedCards.push(card);
+            
+            if (gameState.flippedCards.length === 2) {
+                gameState.moves++;
+                document.getElementById('moves').textContent = gameState.moves;
+                
+                setTimeout(checkMatch, 1000);
+            }
+            
+            renderBoard();
+        }
+
+        function checkMatch() {
+            const [card1, card2] = gameState.flippedCards;
+            
+            if (card1.symbol === card2.symbol) {
+                card1.isMatched = true;
+                card2.isMatched = true;
+                gameState.matchedPairs++;
+                
+                document.getElementById('matches').textContent = gameState.matchedPairs;
+                
+                if (gameState.matchedPairs === gameState.cards.length / 2) {
+                    endGame();
+                }
+            } else {
+                card1.isFlipped = false;
+                card2.isFlipped = false;
+            }
+            
+            gameState.flippedCards = [];
+            renderBoard();
+        }
+
+        function startTimer() {
+            gameState.startTime = Date.now();
+            gameState.timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        function endGame() {
+            clearInterval(gameState.timerInterval);
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        function startGame() {
+            gameState.cards = createCards();
+            gameState.flippedCards = [];
+            gameState.matchedPairs = 0;
+            gameState.moves = 0;
+            
+            document.getElementById('moves').textContent = '0';
+            document.getElementById('matches').textContent = '0';
+            document.getElementById('timer').textContent = '00:00';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            clearInterval(gameState.timerInterval);
+            renderBoard();
+            startTimer();
+        }
+
+        function resetGame() {
+            clearInterval(gameState.timerInterval);
+            startGame();
+        }
+
+        // Initialize the game
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+                startGame();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,28 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ChatLite - AI via SMS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funbi Onaeko - Developer & Entrepreneur</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #212529;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+
+        .nav-link:hover {
+            background: #495057;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #343a40, #6c757d, #adb5bd);
+        }
+
+        .profile-img {
+            width: 180px;
+            height: 240px;
+            border-radius: 20px;
+            margin: 0 auto 1.5rem;
+            border: 3px solid #f8f9fa;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.15),
+                0 0 20px rgba(108, 117, 125, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            background: linear-gradient(135deg, #6c757d, #495057);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            animation: gentleSwing 4s ease-in-out infinite;
+            transform-origin: center top;
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 17px;
+        }
+
+        .profile-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 70%);
+            border-radius: 17px;
+            pointer-events: none;
+        }
+
+        .profile-img::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(108, 117, 125, 0.3) 0%, 
+                rgba(173, 181, 189, 0.3) 25%,
+                rgba(108, 117, 125, 0.3) 50%,
+                rgba(173, 181, 189, 0.3) 75%,
+                rgba(108, 117, 125, 0.3) 100%);
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0.7;
+            filter: blur(1px);
+        }
+
+        @keyframes gentleSwing {
+            0%, 100% { 
+                transform: rotate(0deg) translateY(0px);
+            }
+            25% { 
+                transform: rotate(0.8deg) translateY(-2px);
+            }
+            75% { 
+                transform: rotate(-0.8deg) translateY(-1px);
+            }
+        }
+
+        .profile-img-placeholder {
+            font-weight: 600;
+            letter-spacing: -2px;
+        }
+
+        .name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .challenge {
+            background: linear-gradient(135deg, #343a40, #495057);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(52, 58, 64, 0.3);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #f8f9fa;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .social-link:hover {
+            background: #343a40;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 58, 64, 0.2);
+        }
+
+        .sections {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #495057, #6c757d);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .projects {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .project {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-left: 4px solid #dee2e6;
+        }
+
+        .project:hover {
+            background: #e9ecef;
+            border-left-color: #495057;
+            transform: translateX(5px);
+        }
+
+        .project h3 {
+            color: #212529;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .project p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .project a {
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .project a:hover {
+            color: #212529;
+        }
+
+        .project a::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .project a:hover::after {
+            transform: translateX(3px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 2rem 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .profile-img {
+                width: 140px;
+                height: 180px;
+            }
+            
+            .name {
+                font-size: 2rem;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .social-link {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-link {
+                width: 100%;
+                max-width: 200px;
+                text-align: center;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .stat-item {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-900 font-sans">
-    <div class="min-h-screen flex flex-col items-center justify-center p-6">
-        <div class="max-w-xl bg-white rounded-2xl shadow-lg p-8">
-            <h1 class="text-3xl font-bold text-indigo-600 mb-4 text-center">Welcome to ChatLite 🤖📱</h1>
-            <p class="text-lg text-gray-700 mb-2 text-center">
-                Chat with AI using SMS — no internet needed.
-            </p>
-            <p class="text-md text-gray-600 text-center">
-                Just send a message to <strong>25102</strong> and start chatting.
-            </p>
-            <div class="mt-6 text-center">
-                <a href="/send" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
-                    Send Test SMS
+<body>
+    <div class="container">
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/about" class="nav-link">About</a>
+            <a href="/game" class="nav-link">Game</a>
+        </div>
+
+        <div class="header">
+            <div class="profile-img">
+                <img src="https://i.pinimg.com/736x/18/20/9f/18209fa6c2dc06bcbd04fc640772106c.jpg" alt="Funbi Onaeko">
+            </div>
+            <h1 class="name">Funbi Onaeko</h1>
+            <p class="title">Full-Stack Developer & Tech Entrepreneur</p>
+            
+            <div class="challenge">
+                Think you can top this? Let's connect!
+            </div>
+
+            <div class="social-links">
+                <a href="https://www.youtube.com/@funbionaeko" class="social-link" target="_blank">
+                    YouTube
+                </a>
+                <a href="https://www.linkedin.com/in/funbi-onaeko-91a500252/" class="social-link" target="_blank">
+                    LinkedIn
+                </a>
+                <a href="#" class="social-link" target="_blank">
+                    Instagram
                 </a>
             </div>
-            <p class="text-xs text-gray-400 mt-8 text-center">ChatLite © 2025</p>
+        </div>
+
+        <div class="sections">
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">▶</div>
+                    Latest Video
+                </h2>
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/TBfENE0x-eQ" 
+                        title="Latest Video" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">⚡</div>
+                    Featured Projects
+                </h2>
+                <div class="projects">
+                    <div class="project">
+                        <h3>UniOrdering</h3>
+                        <p>Campus-focused food delivery platform with 800+ active users</p>
+                        <a href="https://uniordering.com" target="_blank">Visit Project</a>
+                    </div>
+                    
+                    <div class="project">
+                        <h3>Spill</h3>
+                        <p>Anonymous safety app for women with AI-powered gender verification</p>
+                        <a href="https://spillforwomen.netlify.app/" target="_blank">Visit Project</a>
+                    </div>
+                    
+                    <div class="project">
+                        <h3>Campus Cart</h3>
+                        <p>Multi-campus e-commerce solution with integrated payment systems</p>
+                        <a href="https://campuscart.azurewebsites.net/" target="_blank">Visit Project</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <div class="section-icon">#</div>
+                    Quick Stats
+                </h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">800+</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">10+</div>
+                        <div class="stat-label">Major Projects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5th</div>
+                        <div class="stat-label">Zindi ML Rank</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add loading animation
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
 </body>
 </html>
